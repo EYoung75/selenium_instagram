@@ -2,28 +2,67 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-import datetime
+from selenium.webdriver.common.keys import Keys
+import time
 
 
+class Bot:
+    driver = webdriver.Chrome("./chromedriver")
 
-driver = webdriver.Chrome("./chromedriver")
+    def __init__(self, username, password):
+        super().__init__()
+        self.username = username
+        self.password = password
+        self.login()
 
-driver.get("https://www.instagram.com/accounts/login/?source=auth_switcher")
+    def login(self):
+        if(self.username != ""):
+            self.driver.get(
+                "https://www.instagram.com/accounts/login/?source=auth_switcher"
+            )
+            WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.NAME, "username"))).send_keys(self.username)
+            WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.NAME, "password"))).send_keys(self.password)
+            self.driver.find_elements_by_tag_name("button")[1].click()
+            WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "HoLwm"))).click()
+        
 
-username = WebDriverWait(driver, 10).until(
-    EC.presence_of_element_located((By.NAME, "username"))
-).send_keys("USERNAME")
-password = WebDriverWait(driver, 10).until(
-    EC.presence_of_element_located((By.NAME, "password"))
-).send_keys("PASSWORD")
 
-WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "button")))
-print(driver.find_elements_by_tag_name("button")[1].click())
+bot_one = Bot(input("username: "), input("password: "))
 
-WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "HoLwm"))).click()
 
-WebDriverWait(driver, 10).until(EC.visibility_of_all_elements_located((By.CLASS_NAME, "M9sTE")))
+# ///// LOGIN SEQUENCE
+# driver = webdriver.Chrome("./chromedriver")
 
-for post in driver.find_elements_by_class_name("M9sTE"):
-    print(post)
+# driver.get("https://www.instagram.com/accounts/login/?source=auth_switcher")
 
+# username = WebDriverWait(driver, 10).until(
+#     EC.presence_of_element_located((By.NAME, "username"))
+# ).send_keys("USERNAME")
+# password = WebDriverWait(driver, 10).until(
+#     EC.presence_of_element_located((By.NAME, "password"))
+# ).send_keys("PASSWORD")
+
+# WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "button")))
+# print(driver.find_elements_by_tag_name("button")[1].click())
+
+# WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "HoLwm"))).click()
+# ////
+
+# //// LIKE POST SEQUENCE
+# last_post = False
+
+# while(last_post == False):
+#     doc_body = driver.find_element_by_tag_name("body")
+#     doc_body.send_keys(Keys.PAGE_DOWN)
+#     likes = driver.find_elements_by_xpath("//button/*[name()='svg'][@aria-label='Like']")
+#     for like in likes:
+#         like.click()
+#         time.sleep(.2)
+#         print("like")
+#     try:
+#         driver.find_element_by_xpath("//button/*[name()='svg'][@aria-label='Unlike']")
+#         print("breaking")
+#         break
+#     except:
+#         continue
+# //////
