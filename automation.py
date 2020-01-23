@@ -36,8 +36,8 @@ driver = webdriver.Chrome("./chromedriver")
 driver.get("https://www.instagram.com/accounts/login/?source=auth_switcher")
 driver.maximize_window()
 
-username = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "username"))).send_keys("")
-password = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "password"))).send_keys("")
+username = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "username"))).send_keys("USERNAME")
+password = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "password"))).send_keys("PASSWORD")
 
 WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "button")))
 print(driver.find_elements_by_tag_name("button")[1].click())
@@ -49,13 +49,13 @@ WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "
 finished = 0
 
 # while(EC.visibility_of_any_elements_located(driver.find_elements_by_xpath("//button/*[name()='svg'][@aria-label='Like']"))):
-while finished < 8:
+while finished < 20:
+    time.sleep(1)
     doc_body = driver.find_element_by_tag_name("body")
     doc_body.send_keys(Keys.PAGE_DOWN)
     likes = driver.find_elements_by_xpath("//button/*[name()='svg'][@aria-label='Like']")
     for like in likes:
         like.click()
-        time.sleep(.02)
         print("like")
     try:
         # EC.invisibility_of_element_located(driver.find_elements_by_xpath("//button/*[name()='svg'][@aria-label='Like']"))
