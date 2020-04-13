@@ -38,23 +38,28 @@ def like(driver):
 def getUnfollowers(driver, username):
     driver.find_element_by_xpath("//a[contains(@href,'/{}')]".format(username)).click()
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//a[contains(@href, 'following')]"))).click()
-    sugs = driver.find_element_by_xpath('//h4[contains(text(), Suggestions)]')
-    driver.execute_script('arguments[0].scrollIntoView()', sugs)
-    scroll_box = driver.find_element_by_xpath("//div[contains(@class, 'isgrP')]")
-    last_ht, ht = 0, 1
-    while last_ht != ht:
-        last_ht = ht
+    scroll_box = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH,"//div[contains(@class, 'isgrP')]")))
+    last_user = driver.execute_script("return arguments[0].scrollHeight", scroll_box)
+
+    while True:
+        driver.execute_script("arguments[0].scrollTo(0, arguments[0].scrollHeight);", scroll_box)
         time.sleep(1)
-        ht = driver.execute_script("""
-            arguments[0].scrollTo(0, arguments[0].scrollHeight);
-            return arguments[0].scrollHeight;
-            """, scroll_box)
+        new_height = driver.execute_script("return arguments[0].scrollHeight", scroll_box)
+        if new_height == last_user:
+            break
+        last_user = new_height
+    
+    full_list = scroll_box.find_elements_by_xpath("//a[contains(@class, 'FPmhX')]")
+    all_followers = [username.text for username in full_list if username != " "]
+    print(all_followers)
+    time.sleep(30)
+
 
 class IgBot:
     def __init__(self):
         username = input("Enter your username: ")
         password = input("Enter your password: ")
-       
+        
         self.driver = webdriver.Chrome("./chromedriver")
         login(self.driver, username, password)
         # like(self.driver)
