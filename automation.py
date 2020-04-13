@@ -35,9 +35,14 @@ def like(driver):
         except:
             continue
 
-def getUnfollowers(driver, username):
+def compareFollowers(driver, username):
     driver.find_element_by_xpath("//a[contains(@href,'/{}')]".format(username)).click()
-    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//a[contains(@href, 'following')]"))).click()
+    data = ["followers", "following"]
+    for item in data:
+        getInteractionData(driver, username, item)
+
+def getInteractionData(driver, username, path):
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//a[contains(@href, '{}')]".format(path)))).click()
     scroll_box = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH,"//div[contains(@class, 'isgrP')]")))
     last_user = driver.execute_script("return arguments[0].scrollHeight", scroll_box)
 
@@ -50,20 +55,24 @@ def getUnfollowers(driver, username):
         last_user = new_height
     
     full_list = scroll_box.find_elements_by_xpath("//a[contains(@class, 'FPmhX')]")
-    all_followers = [username.text for username in full_list if username != " "]
-    print(all_followers)
-    time.sleep(30)
+    data_point = [username.text for username in full_list if username != " "]
+    driver.find_element_by_xpath("//button/*[name()='svg'][@aria-label='Close']").click()
+    return f"{path}: {data_point}"
+
+
+
 
 
 class IgBot:
     def __init__(self):
         username = input("Enter your username: ")
         password = input("Enter your password: ")
+       
         
         self.driver = webdriver.Chrome("./chromedriver")
         login(self.driver, username, password)
         # like(self.driver)
-        getUnfollowers(self.driver, username)
+        compareFollowers(self.driver, username)
         
 
 
