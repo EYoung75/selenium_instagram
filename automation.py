@@ -37,9 +37,10 @@ def like(driver):
 
 def compareFollowers(driver, username):
     driver.find_element_by_xpath("//a[contains(@href,'/{}')]".format(username)).click()
-    data = ["followers", "following"]
-    for item in data:
-        getInteractionData(driver, username, item)
+    # data = ["followers", "following"]
+    # print(getInteractionData(driver, username, "followers") - getInteractionData(driver, username, "following"))
+    print(getInteractionData(driver, username, "followers") - getInteractionData(driver, username, "following"))
+    
 
 def getInteractionData(driver, username, path):
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//a[contains(@href, '{}')]".format(path)))).click()
@@ -67,7 +68,8 @@ class IgBot:
     def __init__(self):
         username = input("Enter your username: ")
         password = input("Enter your password: ")
-       
+    
+        
         
         self.driver = webdriver.Chrome("./chromedriver")
         login(self.driver, username, password)
