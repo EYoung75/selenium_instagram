@@ -16,7 +16,6 @@ def login(driver, username, password):
         EC.presence_of_element_located((By.NAME, "password"))
     ).send_keys(password)
     driver.find_element_by_xpath("//button/div[contains(text(),'Log In')]").click()
-    # WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "HoLwm"))).click()
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//button[contains(text(), 'Not Now')]")
@@ -24,7 +23,7 @@ def login(driver, username, password):
     ).click()
 
 
-def like(driver):
+def likeAllPosts(driver):
     finished = 0
     while finished < 20:
         time.sleep(2)
@@ -96,13 +95,16 @@ class IgBot:
     def __init__(self):
         username = input("Enter your username: ")
         password = input("Enter your password: ")
-    
-
+        command = input("What would you like to do? ")
+        username = "evanyoung75"
+        password = "NavyEvan75!"
         self.driver = webdriver.Chrome("./chromedriver")
         login(self.driver, username, password)
-        # like(self.driver)
-        compareFollowers(self.driver, username)
-    
+        if  command == "like":
+            likeAllPosts(self.driver)
+        elif command == "check unfollowers":
+            compareFollowers(self.driver, username)
+
 
 IgBot()
 
